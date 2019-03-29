@@ -89,8 +89,8 @@ class MouseSelection extends Component<Props, State> {
       }
 
       return {
-        x: pageX - containerBoundingRect.left + container.scrollLeft,
-        y: pageY - containerBoundingRect.top + container.scrollTop
+        x: pageX - (containerBoundingRect.left + window.scrollX) + container.scrollLeft,
+        y: pageY - (containerBoundingRect.top + window.scrollY) + container.scrollTop
       };
     };
 
