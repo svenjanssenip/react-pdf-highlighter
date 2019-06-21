@@ -481,8 +481,18 @@ class PdfHighlighter<T_HT: T_Highlight> extends Component<
 
     const viewportPosition = { boundingRect, rects, pageNumber: page.number };
 
+    var contentCollection = range.cloneContents().children;
+    var text = "";
+
+    for (var i = 0; i < contentCollection.length; i++) {
+      if (i > 0) {
+        var previousStyle = contentCollection.item(i - 1).getAttribute("style");
+      }
+      text += `${i === 0 ? "" : " "}${contentCollection.item(i).textContent}`;
+    }
+
     const content = {
-      text: range.toString()
+      text: text
     };
     const scaledPosition = this.viewportPositionToScaled(viewportPosition);
 
@@ -518,7 +528,7 @@ class PdfHighlighter<T_HT: T_Highlight> extends Component<
         <div
           ref={node => (this.containerNode = node)}
           className="PdfHighlighter"
-          onContextMenu={(e) => e.preventDefault()}
+          onContextMenu={e => e.preventDefault()}
         >
           <div className="pdfViewer" />
           {typeof enableAreaSelection === "function" ? (
