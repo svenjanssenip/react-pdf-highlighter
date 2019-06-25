@@ -484,18 +484,22 @@ class PdfHighlighter<T_HT: T_Highlight> extends Component<
     var contentCollection = range.cloneContents().children;
     var text = "";
 
-    const getTopValue = function(styleString) {
-      var result = /top: .*?px;/.exec(styleString);
-      return result ? result[0] : null;
+    const getTopValue = function getTopValue(styleString) {
+      const result = /top: .*?px;/.exec(styleString);
+      if (!result || result.length === 0) return null;
+
+      const value = result[0].replace("top: ", "").replace("px;", "");
+
+      return Math.round(value);
     };
 
     for (var i = 0; i < contentCollection.length; i++) {
       let lineBreak = "";
       if (i > 0) {
-        var previousTop = getTopValue(
+        const previousTop = getTopValue(
           contentCollection.item(i - 1).getAttribute("style")
         );
-        var currentTop = getTopValue(
+        const currentTop = getTopValue(
           contentCollection.item(i).getAttribute("style")
         );
         if (previousTop && currentTop && previousTop !== currentTop)
@@ -503,7 +507,7 @@ class PdfHighlighter<T_HT: T_Highlight> extends Component<
       }
       text +=
         lineBreak +
-        (i === 0 ? "" : " ") +
+        (i === 0 || lineBreak ? "" : " ") +
         contentCollection.item(i).textContent;
     }
 
