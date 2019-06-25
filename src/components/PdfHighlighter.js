@@ -484,11 +484,27 @@ class PdfHighlighter<T_HT: T_Highlight> extends Component<
     var contentCollection = range.cloneContents().children;
     var text = "";
 
+    const getTopValue = function(styleString) {
+      var result = /top: .*?px;/.exec(styleString);
+      return result ? result[0] : null;
+    };
+
     for (var i = 0; i < contentCollection.length; i++) {
+      let lineBreak = "";
       if (i > 0) {
-        var previousStyle = contentCollection.item(i - 1).getAttribute("style");
+        var previousTop = getTopValue(
+          contentCollection.item(i - 1).getAttribute("style")
+        );
+        var currentTop = getTopValue(
+          contentCollection.item(i).getAttribute("style")
+        );
+        if (previousTop && currentTop && previousTop !== currentTop)
+          lineBreak += "\r\n";
       }
-      text += `${i === 0 ? "" : " "}${contentCollection.item(i).textContent}`;
+      text +=
+        lineBreak +
+        (i === 0 ? "" : " ") +
+        contentCollection.item(i).textContent;
     }
 
     const content = {
