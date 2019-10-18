@@ -105,7 +105,7 @@ class PdfHighlighter<T_HT: T_Highlight> extends PureComponent<
 
   componentDidUpdate(prevProps: Props<T_HT>) {
     if (prevProps.highlights !== this.props.highlights) {
-      this.renderHighlights(this.props)
+      this.renderHighlights(this.props);
     }
   }
 
@@ -156,6 +156,10 @@ class PdfHighlighter<T_HT: T_Highlight> extends PureComponent<
   }
 
   findOrCreateHighlightLayer(page: number) {
+    const pageView = this.viewer.getPageView(page - 1);
+
+    if (!pageView) return null;
+
     const textLayer = this.viewer.getPageView(page - 1).textLayer;
 
     if (!textLayer) {
